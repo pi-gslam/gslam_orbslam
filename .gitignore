@@ -1,0 +1,4 @@
+*build
+*.user
+*temp*
+ThirdParty/internal/GSLAM
