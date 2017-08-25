@@ -1,0 +1,7 @@
+{  
+global:  
+  PILBuildManifest;  
+  PILInitializeLibrary;
+  PILUninitializeLibrary;
+local: *;  
+};
