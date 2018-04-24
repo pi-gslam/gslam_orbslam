@@ -30,7 +30,6 @@
 #include "Tracking.h"
 #include "KeyFrameDatabase.h"
 
-
 namespace ORB_SLAM {
 
 class Tracking;
@@ -41,6 +40,8 @@ class LocalMapping
 {
 public:
     LocalMapping(Map* pMap);
+
+    ~LocalMapping(){}
 
     void SetLoopCloser(LoopClosing* pLoopCloser);
 
@@ -83,6 +84,22 @@ protected:
     cv::Mat SkewSymmetricMatrix(const cv::Mat &v);
 
     void ResetIfRequested();
+    class ScopedLogger
+    {
+    public:
+        ScopedLogger(std::stringstream& sst):_sst(sst),_verbose(svar.GetInt("SLAM.Verbose")){
+            _sst.str("");
+        }
+        ~ScopedLogger(){
+            if(_sst.str().size()&&(_verbose&0x01))
+                LOG(INFO)<<_sst.str();
+        }
+
+        std::stringstream& _sst;
+        int                _verbose;
+    };
+    std::stringstream       _logger;
+
     bool mbResetRequested;
     boost::mutex mMutexReset;
 

@@ -16,7 +16,7 @@ class ORBSLAM : public GSLAM::SLAM
 {
 public:
     ORBSLAM();
-    virtual ~ORBSLAM(){}
+    virtual ~ORBSLAM();
     virtual std::string type()const{return "ORBSLAM";}
     virtual bool valid()const;
 
@@ -28,7 +28,14 @@ public:
 
     virtual void run();
 
-    virtual bool isDrawable()const{return true;}
+    virtual bool isDrawable()const{return false;}
+
+    virtual bool setCallback(GObjectHandle* cbk){
+        handle=cbk;
+     return true;
+    }
+
+    void flushMap();
 
 private:
     SPtr<ORB_SLAM::ORBVocabulary>           Vocabulary;
@@ -37,6 +44,7 @@ private:
     SPtr<ORB_SLAM::Tracking>                Tracker;
     SPtr<ORB_SLAM::LocalMapping>            LocalMapper;
     SPtr<ORB_SLAM::LoopClosing>             LoopCloser;
+    GObjectHandle*                          handle=NULL;
 };
 
 }

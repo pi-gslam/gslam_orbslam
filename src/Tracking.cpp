@@ -126,6 +126,9 @@ void Tracking::SetKeyFrameDatabase(KeyFrameDatabase *pKFDB)
 
 bool Tracking::track(GSLAM::FramePtr& videoframe)
 {
+    ScopedLogger log(_logger);
+    _logger<<"Frame "<<videoframe->id();
+
     if(videoframe->cameraNum()<1)
     {
 //        LOG(ERROR)<<"Need at least 1 camera.\n";
@@ -210,6 +213,7 @@ void Tracking::track(const cv::Mat &img_in, double timestamp)
     {
         mState = NOT_INITIALIZED;
     }
+    _logger<<","<<mCurrentFrame.mvKeys.size()<<" kpts";
 
     mLastProcessedState=mState;
 
@@ -226,7 +230,7 @@ void Tracking::track(const cv::Mat &img_in, double timestamp)
     else if( mState == INITIALIZING )
     {
         Initialize();
-        cout<<timestamp<<":Initializing...\n";
+        _logger<<",Initializing";
     }
     else
     {
@@ -490,6 +494,8 @@ bool Tracking::TrackPreviousFrame()
 
     int nmatches = matcher.WindowSearch(mLastFrame,mCurrentFrame,200,vpMapPointMatches,minOctave);
 
+    _logger<<",W"<<nmatches;
+
     // If not enough matches, search again without scale constraint
     if(nmatches<10)
     {
@@ -499,6 +505,7 @@ bool Tracking::TrackPreviousFrame()
             vpMapPointMatches=vector<MapPoint*>(mCurrentFrame.mvpMapPoints.size(),static_cast<MapPoint*>(NULL));
             nmatches=0;
         }
+        _logger<<",W"<<nmatches;
     }
 
     mLastFrame.mTcw.copyTo(mCurrentFrame.mTcw);
@@ -521,10 +528,12 @@ bool Tracking::TrackPreviousFrame()
 
         // Search by projection with the estimated pose
         nmatches += matcher.SearchByProjection(mLastFrame,mCurrentFrame,15,vpMapPointMatches);
+
     }
     else //Last opportunity
         nmatches = matcher.SearchByProjection(mLastFrame,mCurrentFrame,50,vpMapPointMatches);
 
+    _logger<<",P"<<nmatches;
 
     mCurrentFrame.mvpMapPoints=vpMapPointMatches;
 
@@ -543,6 +552,7 @@ bool Tracking::TrackPreviousFrame()
             nmatches--;
         }
 
+    _logger<<",Inlier"<<nmatches;
     return nmatches>=10;
 }
 
@@ -559,6 +569,7 @@ bool Tracking::TrackWithMotionModel()
     // Project points seen in previous frame
     int nmatches = matcher.SearchByProjection(mCurrentFrame,mLastFrame,15);
 
+    _logger<<",TrackWithMotionModel"<<nmatches;
     if(nmatches<20)
        return false;
 
@@ -579,6 +590,7 @@ bool Tracking::TrackWithMotionModel()
         }
     }
 
+    _logger<<",Inliers"<<nmatches;
     return nmatches>=10;
 }
 
@@ -596,6 +608,7 @@ bool Tracking::TrackLocalMap()
 
     // Optimize Pose
     mnMatchesInliers = Optimizer::PoseOptimization(&mCurrentFrame);
+    _logger<<",TrackLocalMap"<<mnMatchesInliers;
 
     // Update MapPoints Statistics
     for(size_t i=0; i<mCurrentFrame.mvpMapPoints.size(); i++)
@@ -665,6 +678,7 @@ void Tracking::CreateNewKeyFrame()
 
     mnLastKeyFrameId = mCurrentFrame.mnId;
     mpLastKeyFrame = pKF;
+    _logger<<",KF";
 }
 
 void Tracking::SearchReferencePointsInFrustum()

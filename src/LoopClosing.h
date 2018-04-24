@@ -63,6 +63,8 @@ public:
 
     void RequestReset();
 
+    bool stopRequested=false,isStoped=false;
+
 protected:
 
     bool CheckNewKeyFrames();

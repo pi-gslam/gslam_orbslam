@@ -25,6 +25,7 @@
 #include "LoopClosing.h"
 #include "ORBmatcher.h"
 #include "Optimizer.h"
+#include "GSLAM/core/Svar.h"
 
 
 namespace ORB_SLAM {
@@ -51,7 +52,8 @@ void LocalMapping::Run()
     while( true ) {
         // Check if there are keyframes in the queue
         if(CheckNewKeyFrames())
-        {            
+        {
+            ScopedLogger log(_logger);
             // Tracking will see that Local Mapping is busy
             SetAcceptKeyFrames(false);
 
@@ -85,26 +87,21 @@ void LocalMapping::Run()
             }
 
             mpLoopCloser->InsertKeyFrame(mpCurrentKeyFrame);
+            scommand.Call("MapFlush");
         }
 
         // Safe area to stop
         if( stopRequested() )
         {
-            Stop();
-
-            GSLAM::Rate r2(1000);
-            while( isStopped() )
-            {
-                r2.sleep();
-            }
-
             SetAcceptKeyFrames(true);
+            break;
         }
 
         ResetIfRequested();
 
         r.sleep();
     }
+    Stop();
 }
 
 void LocalMapping::InsertKeyFrame(KeyFrame *pKF)
@@ -230,6 +227,7 @@ void LocalMapping::CreateNewMapPoints()
 
     const float ratioFactor = 1.5f*mpCurrentKeyFrame->GetScaleFactor();
 
+    int createdCount=0;
     // Search matches with epipolar restriction and triangulate
     for(size_t i=0; i<vpNeighKFs.size(); i++)
     {
@@ -270,6 +268,7 @@ void LocalMapping::CreateNewMapPoints()
         const float cy2 = pKF2->cy;
         const float invfx2 = 1.0f/fx2;
         const float invfy2 = 1.0f/fy2;
+
 
         // Triangulate each match
         for(size_t ikp=0, iendkp=vMatchedKeysUn1.size(); ikp<iendkp; ikp++)
@@ -372,8 +371,10 @@ void LocalMapping::CreateNewMapPoints()
 
             mpMap->AddMapPoint(pMP);
             mlpRecentAddedMapPoints.push_back(pMP);
+            createdCount++;
         }
     }
+    _logger<<",New "<<createdCount;
 }
 
 void LocalMapping::SearchInNeighbors()

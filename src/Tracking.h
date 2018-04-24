@@ -144,7 +144,21 @@ protected:
     bool NeedNewKeyFrame();
     void CreateNewKeyFrame();
 
+    class ScopedLogger
+    {
+    public:
+        ScopedLogger(std::stringstream& sst):_sst(sst),_verbose(svar.GetInt("SLAM.Verbose")){
+            _sst.str("");
+        }
+        ~ScopedLogger(){
+            if(_sst.str().size()&&(_verbose&0x01))
+                LOG(INFO)<<_sst.str();
+        }
 
+        std::stringstream& _sst;
+        int                _verbose;
+    };
+    std::stringstream       _logger;
 
     //Other Thread Pointers
     LocalMapping* mpLocalMapper;

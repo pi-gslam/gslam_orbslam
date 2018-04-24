@@ -75,10 +75,15 @@ void LoopClosing::Run()
             }
         }
 
+        if(stopRequested){
+            break;
+        }
+
         ResetIfRequested();
 
         r.sleep();
     }
+    isStoped=true;
 }
 
 void LoopClosing::InsertKeyFrame(KeyFrame *pKF)
