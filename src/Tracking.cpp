@@ -201,6 +201,9 @@ void Tracking::track(const cv::Mat &img_in, double timestamp)
     } else if( img_in.channels() == 1 ) {
         im = img_in;
     }
+    else if(img_in.channels()==4){
+        cvtColor(img_in,im,CV_BGRA2GRAY);
+    }
 
     // grenerate frame
     if( mState==WORKING || mState==LOST )
