@@ -28,7 +28,7 @@
 #include "ORBmatcher.h"
 #include "LoopClosing.h"
 
-using namespace pi;
+using namespace GSLAM;
 
 namespace ORB_SLAM {
 

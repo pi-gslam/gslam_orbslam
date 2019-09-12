@@ -87,7 +87,7 @@ void LocalMapping::Run()
             }
 
             mpLoopCloser->InsertKeyFrame(mpCurrentKeyFrame);
-            scommand.Call("MapFlush");
+            messenger.publish("orbslam/flushmap",true);
         }
 
         // Safe area to stop

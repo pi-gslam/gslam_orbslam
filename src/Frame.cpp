@@ -24,6 +24,7 @@
 
 #include <GSLAM/core/Svar.h>
 #include <GSLAM/core/Camera.h>
+#include <GSLAM/core/GSLAM.h>
 #if __linux
     #ifndef INCLUDED_GL_H
     #define INCLUDED_GL_H
@@ -37,17 +38,17 @@
     #include "gui/GL_headers/glext.h"
 #endif
 
-inline void glVertex(const pi::Point3d& pt)
+inline void glVertex(const GSLAM::Point3d& pt)
 {
     glVertex3d(pt.x,pt.y,pt.z);
 }
 
-inline void glVertex(const pi::Point3f& pt)
+inline void glVertex(const GSLAM::Point3f& pt)
 {
     glVertex3f(pt.x,pt.y,pt.z);
 }
 
-inline void glColor(const pi::Point3ub& color)
+inline void glColor(const GSLAM::Point3ub& color)
 {
     glColor3ub(color.x,color.y,color.z);
 }
@@ -386,31 +387,30 @@ void Frame::ComputeImageBounds()
 
 void Frame::draw()
 {
-    using namespace pi;
-
+    using namespace GSLAM;
     if(mTcw.empty()) return;
 
     cv::Mat pose_cv=mTcw;
-    pi::SE3f pose;
+    GSLAM::SE3f pose;
     pose.fromMatrix((float*)pose_cv.data);
     pose=pose.inverse();
 
     double depth=0.5;
 
-    Point3f t=pose.get_translation();
+    GSLAM::Point3f t=pose.get_translation();
 
     GSLAM::Camera cam_out({im.cols,im.rows,fx,fy,cx,cy});
-    pi::Point3d tl=cam_out.UnProject(pi::Point2d(mnMinX,mnMinY));
-    pi::Point3d tr=cam_out.UnProject(pi::Point2d(mnMaxX,mnMinY));
-    pi::Point3d bl=cam_out.UnProject(pi::Point2d(mnMinX,mnMaxY));
-    pi::Point3d br=cam_out.UnProject(pi::Point2d(mnMaxX,mnMaxY));
-//    pi::Point2d ct=cam_out->UnProject(cam_out->Cx(),cam_out->Cy());
+    GSLAM::Point3d tl=cam_out.UnProject(GSLAM::Point2d(mnMinX,mnMinY));
+    GSLAM::Point3d tr=cam_out.UnProject(GSLAM::Point2d(mnMaxX,mnMinY));
+    GSLAM::Point3d bl=cam_out.UnProject(GSLAM::Point2d(mnMinX,mnMaxY));
+    GSLAM::Point3d br=cam_out.UnProject(GSLAM::Point2d(mnMaxX,mnMaxY));
+//    GSLAM::Point2d ct=cam_out->UnProject(cam_out->Cx(),cam_out->Cy());
 
-    Point3f  W_tl=pose*(pi::Point3d(tl.x,tl.y,1)*depth);
-    Point3f  W_tr=pose*(pi::Point3d(tr.x,tr.y,1)*depth);
-    Point3f  W_bl=pose*(pi::Point3d(bl.x,bl.y,1)*depth);
-    Point3f  W_br=pose*(pi::Point3d(br.x,br.y,1)*depth);
-//    Point3f  W_ct=pose*(pi::Point3d(ct.x,ct.y,1)*depth);
+    Point3f  W_tl=pose*(GSLAM::Point3d(tl.x,tl.y,1)*depth);
+    Point3f  W_tr=pose*(GSLAM::Point3d(tr.x,tr.y,1)*depth);
+    Point3f  W_bl=pose*(GSLAM::Point3d(bl.x,bl.y,1)*depth);
+    Point3f  W_br=pose*(GSLAM::Point3d(br.x,br.y,1)*depth);
+//    Point3f  W_ct=pose*(GSLAM::Point3d(ct.x,ct.y,1)*depth);
 
     // Draw camera rect
     glBegin(GL_LINES);

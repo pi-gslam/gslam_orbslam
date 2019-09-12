@@ -39,7 +39,6 @@
 #include "Tracking.h"
 
 using namespace std;
-using namespace pi;
 
 
 namespace ORB_SLAM {
@@ -179,7 +178,7 @@ bool Tracking::track(GSLAM::FramePtr& videoframe)
     if(mState == WORKING)
     {
         cv::Mat pose_cv=mLastFrame.mTcw;
-        pi::SE3f pose;
+        GSLAM::SE3f pose;
         pose.fromMatrix((float*)pose_cv.data);
         videoframe->setPose(pose.inverse());
         return true;
@@ -1121,7 +1120,7 @@ void Tracking::CheckResetByPublishers()
 void Tracking::Draw_Something()
 {
     typedef unsigned char ru8;
-//    pi::timer.enter("Tracking::Draw_Something");
+//    GSLAM::timer.enter("Tracking::Draw_Something");
     //current pose
     Frame &Frame2Draw = mCurrentFrame;
     Frame2Draw.draw();

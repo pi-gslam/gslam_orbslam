@@ -48,17 +48,17 @@
     #include "gui/GL_headers/glext.h"
 #endif
 
-inline void glVertex(const pi::Point3d& pt)
+inline void glVertex(const GSLAM::Point3d& pt)
 {
     glVertex3d(pt.x,pt.y,pt.z);
 }
 
-inline void glVertex(const pi::Point3f& pt)
+inline void glVertex(const GSLAM::Point3f& pt)
 {
     glVertex3f(pt.x,pt.y,pt.z);
 }
 
-inline void glColor(const pi::Point3ub& color)
+inline void glColor(const GSLAM::Point3ub& color)
 {
     glColor3ub(color.x,color.y,color.z);
 }

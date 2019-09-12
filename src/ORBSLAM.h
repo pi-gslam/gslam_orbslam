@@ -12,7 +12,7 @@
 
 namespace GSLAM{
 
-class ORBSLAM : public GSLAM::SLAM
+class ORBSLAM
 {
 public:
     ORBSLAM();
@@ -30,21 +30,17 @@ public:
 
     virtual bool isDrawable()const{return false;}
 
-    virtual bool setCallback(GObjectHandle* cbk){
-        handle=cbk;
-     return true;
-    }
-
     void flushMap();
 
 private:
-    SPtr<ORB_SLAM::ORBVocabulary>           Vocabulary;
-    SPtr<ORB_SLAM::KeyFrameDatabase>        Database;
-    SPtr<ORB_SLAM::Map>                     World;
-    SPtr<ORB_SLAM::Tracking>                Tracker;
-    SPtr<ORB_SLAM::LocalMapping>            LocalMapper;
-    SPtr<ORB_SLAM::LoopClosing>             LoopCloser;
-    GObjectHandle*                          handle=NULL;
+    std::shared_ptr<ORB_SLAM::ORBVocabulary>           Vocabulary;
+    std::shared_ptr<ORB_SLAM::KeyFrameDatabase>        Database;
+    std::shared_ptr<ORB_SLAM::Map>                     World;
+    std::shared_ptr<ORB_SLAM::Tracking>                Tracker;
+    std::shared_ptr<ORB_SLAM::LocalMapping>            LocalMapper;
+    std::shared_ptr<ORB_SLAM::LoopClosing>             LoopCloser;
+    Subscriber                                         subFlushMap;
+    Publisher                                          pubMap,pubCurFrame;
 };
 
 }
