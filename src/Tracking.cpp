@@ -26,7 +26,6 @@
 #include <GSLAM/core/Timer.h>
 #include <GSLAM/core/Svar.h>
 #include <GSLAM/core/Camera.h>
-#include <GSLAM/core/VecParament.h>
 
 #include "ORBmatcher.h"
 #include "Converter.h"

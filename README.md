@@ -9,7 +9,7 @@ This code is the [ORB_SLAM](https://github.com/raulmur/ORB_SLAM) plugin implemen
 ## 2. Build and Install
 ### 2.1. Build and Install GSLAM
 
-git clone https://github.com/zdzhaoyong/GSLAM --branch 2.4.2
+git clone https://github.com/zdzhaoyong/GSLAM
 
 ### 2.2. Build and Install GSLAM-ORBSLAM
 
@@ -24,5 +24,5 @@ sudo make install
 ## 3. Run ORBSLAM with gslam
 
 ```
-gslam conf=Default.cfg Dataset=your_dataset 
+gslam qviz orbslam -ORBVocabularyFile ../data/ORB_New.voc play -dataset /data/zhaoyong/Dataset/mav0/mono.euroc -autostart
 ```

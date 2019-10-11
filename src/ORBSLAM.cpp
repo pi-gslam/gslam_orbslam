@@ -8,7 +8,6 @@
 #include <opencv2/core/core.hpp>
 #include <GSLAM/core/Timer.h>
 #include <GSLAM/core/HashMap.h>
-#include <GSLAM/core/Event.h>
 
 using namespace GSLAM;
 namespace GSLAM{
