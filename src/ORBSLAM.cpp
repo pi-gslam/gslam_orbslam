@@ -194,6 +194,8 @@ int run(Svar config){
     });
 
     if(config.get("help",false)){
+        auto pubMap=messenger.advertise<MapPtr>("orbslam/map",0);
+        auto pubCurFrame=messenger.advertise<FramePtr>("orbslam/curframe");
         config["__usage__"]=messenger.introduction();
         return config.help();
     }
